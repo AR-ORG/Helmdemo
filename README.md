@@ -522,43 +522,80 @@ Search for persistentVolume and change ` enabled: true` to ` enabled: false`. Th
 
 ` helm install ./prometheus `
 
-Copy the output on notepad 
+Copy the output on wordpad
 
-> The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
-whopping-uakari-prometheus-server.default.svc.cluster.local
+` helm fetch stable/grafana ` 
 
+` tar xvf grafana-3.3.8.tgz `
 
-Get the Prometheus server URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9090
-#################################################################################
-######   WARNING: Persistence is disabled!!! You will lose your data when   #####
-######            the Server pod is terminated.                             #####
-#################################################################################
+` cd grafana ` 
 
+` kubectl get svc | grep -i prometheus-server ` 
 
-The Prometheus alertmanager can be accessed via port 80 on the following DNS name from within your cluster:
-whopping-uakari-prometheus-alertmanager.default.svc.cluster.local
+Get the name of the service of prometheus server service 
 
+```
+kubectl get svc | grep -i prometheus-server
+whopping-uakari-prometheus-server               ClusterIP      10.107.135.75    <none>        80/TCP              14m
+```
 
-Get the Alertmanager URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=alertmanager" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9093
-#################################################################################
-######   WARNING: Persistence is disabled!!! You will lose your data when   #####
-######            the AlertManager pod is terminated.                       #####
-#################################################################################
+` vi values.yaml `
 
 
-The Prometheus PushGateway can be accessed via port 9091 on the following DNS name from within your cluster:
-whopping-uakari-prometheus-pushgateway.default.svc.cluster.local
+Install grafana - 
 
-Get the PushGateway URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=pushgateway" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9091
+` helm install ./grafana `
 
-For more information on running Prometheus, visit:
-https://prometheus.io/
+Save the output from grafana on wordpad 
+
+Get the nodeport port for grafana service - 
+
+```
+kubectl get svc | grep grafana
+jaunty-chinchilla-grafana                       NodePort       10.107.211.81    <none>        80:30405/TCP        9m29s
+```
+
+Access the grafana dashboard using http://EXTERNAL_IP_ADDRESS:30405 on your dashboard
+
+Login using user: admin 
+
+Get the password using the NOTES that you got using grafana - 
+
+```
+kubectl get secret --namespace default jaunty-chinchilla-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+fRBtwZOKIbwxAuW50K4flyRszHORnagEiOQMIdkw
+```
+
+On the Datasource section - Add datasource 
+
+use the datasource as prometheus 
+
+for the URL - http://SERVICE_NAME_OF_PROMETHEUS_SERVER
+
+` http://whopping-uakari-prometheus-server`
+
+Click Save and Test 
+
+Click the + Sign and select Import 
+
+We will now import the official grafana dashboard for promethus - 
+
+Put - ` 159 ` in the Grafana.com Dashboard section and it will upload the pre-existing dashboard 
+
+Give a name for the dashboard 
+
+Name : my grafan dashboard
+
+In the Prometheus datasource section select the correct datasource - 
+
+Prometheus : Prometheus 
+
+Click Import and view the dashboard
+
+
+
+
+
 
 
 
