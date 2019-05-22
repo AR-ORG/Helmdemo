@@ -83,6 +83,10 @@
         
         5.  echo "You are installing NGINX with CONFIGMAP as a volume" >  nginxdemo/templates/NOTES.txt
         
+        RUN - 
+        
+        helm install ./nginxdemo
+        
         6.  Note the random name - NAME:   killer-liger
         
         7.  helm get manifest killer-liger
