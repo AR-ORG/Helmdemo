@@ -300,9 +300,9 @@
     7.  Add below list to values.yaml
     
             deploymentlabels:
-              - app: frontend
-              - tier: webtier
-              - application: nginx
+              app: frontend
+              tier: webtier
+              application: nginx
               
     8.  Modify - nginxdemo5/templates/nginx-deployment.yaml as below
             
