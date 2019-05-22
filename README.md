@@ -482,7 +482,7 @@ Get the Password by -
 ```   
 printf $(kubectl get secret --namespace default veering-walrus-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 YHeHhKXGx0
-` 
+```
 
 Get the NodePort by - 
 ```   
