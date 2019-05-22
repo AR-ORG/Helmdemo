@@ -331,6 +331,74 @@
                 tier: "webtier"
 
               
+##  Helm Packaging 
+
+Helm Packaging allows you to package your charts as a single tar file and upload it to your version control system. THis chart can then be downloaded like any other linux application using apt-get or yum from an external repository. 
+
+```
+
+On your version control - create a repository with the name helm-package - we will use github here. 
+
+Switch to your  home directory 
+
+cd ~/ 
+
+git clone https://github.com/hub-kubernetes/helm-package.git
+
+cd helm-package
+
+Package your helm chart 
+
+helm package ~/adobe-training/Helmdemo/nginxdemo/ 
+ 
+ ls 
+ 
+nginxdemo-0.1.0.tgz
+
+
+helm repo index .
+
+git add .
+
+
+git commit -m " adding helm repo " 
+
+git push
+
+Open your github repository 
+
+Click on settings 
+
+Click on Github Pages 
+
+Add source to master 
+
+
+Your github repo now has a single blank file index.html
+
+A link would be available like - https://hub-kubernetes.github.io/helm-package/ -- make a note of this 
+
+
+add this repo to helm - 
+
+helm repo add nginxdemo 'https://hub-kubernetes.github.io/helm-package/'
+
+helm repo add nginxdemo 'https://hub-kubernetes.github.io/helm-package/'
+"nginxdemo" has been added to your repositories
+
+helm repo update
+
+You can now search for your helm chart - 
+
+helm search nginxdemo
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION                
+local/nginxdemo         0.1.0           1.0             A Helm chart for Kubernetes
+nginxdemo/nginxdemo     0.1.0           1.0             A Helm chart for Kubernetes
+
+```
+
+##  Using stable repository 
+
 
 
 
