@@ -495,7 +495,79 @@ Login to jenkins by going to - http://EXTERNAL_IP_ADDR:30429/
 
 Lets now do one more demo - 
 
-`   cd ~/`
+`   cd ~/ `
+
+` mkdir prometheus && cd prometheus` 
+
+` helm fetch stable/prometheus`
+
+```
+ls -ltr
+total 24
+-rw-r--r-- 1 root root 22460 May 22 19:33 prometheus-8.11.4.tgz
+
+tar xvf prometheus-8.11.4.tgz
+
+cd prometheus/
+
+```
+
+We will now edit the values.yaml to disable all persistent volumes - 
+
+` vi values.yaml ` 
+
+Search for persistentVolume and change ` enabled: true` to ` enabled: false`. There will be 2 instances - one for prometheus-server and second for alert manager 
+
+` cd .. ` 
+
+` helm install ./prometheus `
+
+Copy the output on notepad 
+
+> The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
+whopping-uakari-prometheus-server.default.svc.cluster.local
+
+
+Get the Prometheus server URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace default port-forward $POD_NAME 9090
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Server pod is terminated.                             #####
+#################################################################################
+
+
+The Prometheus alertmanager can be accessed via port 80 on the following DNS name from within your cluster:
+whopping-uakari-prometheus-alertmanager.default.svc.cluster.local
+
+
+Get the Alertmanager URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=alertmanager" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace default port-forward $POD_NAME 9093
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the AlertManager pod is terminated.                       #####
+#################################################################################
+
+
+The Prometheus PushGateway can be accessed via port 9091 on the following DNS name from within your cluster:
+whopping-uakari-prometheus-pushgateway.default.svc.cluster.local
+
+Get the PushGateway URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=pushgateway" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace default port-forward $POD_NAME 9091
+
+For more information on running Prometheus, visit:
+https://prometheus.io/
+
+
+
+
+
+
+
+
+
 
          
     
