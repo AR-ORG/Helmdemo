@@ -399,8 +399,103 @@ nginxdemo/nginxdemo     0.1.0           1.0             A Helm chart for Kuberne
 
 ##  Using stable repository 
 
+Helm stable repository has a bunch of applications for official images that you can download and deploy as a single package - 
+
+The link is as below : 
+
+https://github.com/helm/charts/tree/master/stable
+
+Lets install jenkins using helm chart - 
+
+`   helm install --name my-release stable/jenkins`
+
+This puts pods in pending status because peristent volumes is missing - 
+
+Lets delete this pod and modify few settings to disable persistent volumes- 
+
+helm list 
+
+```
+helm list 
+NAME            REVISION        UPDATED                         STATUS          CHART           APP VERSION     NAMESPACE
+my-release      1               Wed May 22 19:10:44 2019        DEPLOYED        jenkins-1.1.21  lts             default  
+```
+
+```
+helm delete my-release --purge 
+release "my-release" deleted
+```
+
+WE will now download the jenkins repo, make some edits and then install jenkins 
+
+```
+mkdir jenkins 
+
+cd jenkins 
+
+helm fetch stable/jenkins 
+
+ls -ltra
+
+-rw-r--r--  1 root root 27981 May 22 19:14 jenkins-1.1.21.tgz
 
 
+tar xvf jenkins-1.1.21.tgz
+
+cd jenkins/
+
+vi values.yaml 
+
+```
+
+We will now edit values.yaml as per https://github.com/helm/charts/tree/master/stable/jenkins
+
+`   vi values.yaml` 
+
+Search for Persistent
+
+Change `enabled: true` to `enabled: false`
+
+```
+cd ..
+
+helm install ./jenkins
+```
+
+It might take couple of mins to load. Check the notes from NOTES.txt to check the details to login to jenkins 
+
+
+>   1. Get your 'admin' user password by running:
+  printf $(kubectl get secret --namespace default veering-walrus-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+2. Get the Jenkins URL to visit by running these commands in the same shell:
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc --namespace default -w veering-walrus-jenkins'
+  export SERVICE_IP=$(kubectl get svc --namespace default veering-walrus-jenkins --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}")
+  echo http://$SERVICE_IP:8080/login
+
+3. Login with the password from step 1 and the username: admin
+
+Username is : admin 
+
+Get the Password by - 
+
+```   
+printf $(kubectl get secret --namespace default veering-walrus-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+YHeHhKXGx0
+` 
+
+Get the NodePort by - 
+```   
+kubectl get svc | grep jenkins 
+veering-walrus-jenkins         LoadBalancer   10.96.22.82    <pending>     8080:30429/TCP      4m40s 
+```
+
+Login to jenkins by going to - http://EXTERNAL_IP_ADDR:30429/
+
+
+Lets now do one more demo - 
+
+`   cd ~/`
 
          
     
